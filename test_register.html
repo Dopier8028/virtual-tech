@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba Registro</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Prueba de Registro</h1>
+    <form id="testRegisterForm">
+        <input type="text" id="testUsername" placeholder="Usuario" required>
+        <input type="password" id="testPassword" placeholder="Contraseña" required>
+        <button type="submit">Registrar</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        $('#testRegisterForm').on('submit', function(e) {
+            e.preventDefault();
+            var username = $('#testUsername').val().trim();
+            var password = $('#testPassword').val().trim();
+
+            $('#result').text('Enviando...');
+
+            fetch('api/index.php?action=register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: username,
+                    password: password
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    $('#result').text('Registro exitoso: ' + data.user);
+                } else {
+                    $('#result').text('Error: ' + (data.message || 'Error desconocido'));
+                }
+            })
+            .catch(error => {
+                $('#result').text('Error de red: ' + error.message);
+            });
+        });
+    </script>
+</body>
+</html>
